@@ -217,6 +217,38 @@ button {
   font-size: 1em;
 }
 
+.cart-card {
+  position: relative; 
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.cart-card__remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  font-size: var(--small-font);
+  color: var(--dark-grey);
+  transition: color 0.2s;
+}
+
+.cart-card__remove:hover {
+  color: var(--tertiary-color);
+}
+
+.total_value {
+  margin-top: 2rem;
+  padding: 1rem;
+  justify-content: flex-end;
+}
+
+.total_value_container {
+  width: 30%;
+  font-size: var(--large-font);
+  font-weight: bold;
+}
+
 /* End product list card */
 
 .product-detail {
@@ -236,7 +268,6 @@ button {
   font-size: var(--small-font);
   align-items: center;
   width: 70%;
-
 }
 
 .cart-card__image {
@@ -362,7 +393,6 @@ button {
   cursor: pointer;
 }
 
-
 footer {
   font-size: var(--small-font);
   padding: 1em;
@@ -383,3 +413,4 @@ footer {
     grid-template-columns: 150px auto 15%;
   }
 }
+
