@@ -75,7 +75,6 @@ p {
   font-size: var(--small-font);
   width: 110px;
   height: 80px;
-
   flex-direction: column;
   align-items: flex-end;
   box-shadow: 1px 1px 4px var(--light-grey);
@@ -90,7 +89,7 @@ p {
   margin-top: -1.3em;
 }
 
-.logo--square > div {
+.logo--square>div {
   margin-top: -1.7em;
 }
 
@@ -118,17 +117,44 @@ button {
 
 /* Cart icon styles */
 .cart {
-  padding-top: 1em;
   position: relative;
+  display: inline-block;
+  /* Ensures container wraps tightly around SVG */
   text-align: center;
 }
 
+.cart a {
+  display: inline-block;
+  /* Ensures the link wraps tightly around SVG and badge */
+  text-decoration: none;
+}
+
 .cart svg {
-  width: 25px;
+  width: 30px;
+  /* Slightly larger for better visibility */
+  height: 30px;
+  /* Fixed height for consistency */
+  vertical-align: middle;
+  /* Aligns SVG with surrounding content */
 }
 
 .cart:hover svg {
   fill: gray;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: var(--tertiary-color);
+  color: white;
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 1;
+  display: none;
+  border: 1px solid var(--light-grey);
 }
 
 /* End cart icon styles */
@@ -208,8 +234,9 @@ button {
   display: grid;
   grid-template-columns: 25% auto 15%;
   font-size: var(--small-font);
-  /* max-height: 120px; */
   align-items: center;
+  width: 70%;
+
 }
 
 .cart-card__image {
@@ -239,6 +266,17 @@ button {
 .cart-card__price {
   grid-row: 2;
   grid-column: 3;
+}
+
+.total_value {
+  display: flex;
+  justify-content: space-around;
+}
+
+.total_value_container {
+  display: flex;
+  justify-content: space-evenly;
+  width: 20%;
 }
 
 .alert-list {
@@ -324,6 +362,12 @@ button {
   cursor: pointer;
 }
 
+
+footer {
+  font-size: var(--small-font);
+  padding: 1em;
+}
+
 @media screen and (min-width: 500px) {
   body {
     max-width: 1080px;
@@ -338,9 +382,4 @@ button {
     font-size: inherit;
     grid-template-columns: 150px auto 15%;
   }
-}
-
-footer {
-  font-size: var(--small-font);
-  padding: 1em;
 }

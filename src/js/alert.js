@@ -23,17 +23,10 @@ export default class Alert {
     try {
       console.log("Attempting to fetch /json/alerts.json");
       const response = await fetch("/json/alerts.json");
-      console.log(
-        "Fetch response status:",
-        response.status,
-        "OK:",
-        response.ok,
-      );
+      console.log("Fetch response status:", response.status, "OK:", response.ok);
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(
-          `HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`,
-        );
+        throw new Error(`HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`);
       }
       return await response.json();
     } catch (error) {
@@ -79,9 +72,7 @@ export default class Alert {
     const closeButton = document.createElement("button");
     closeButton.className = "alert-close";
     closeButton.textContent = "✕";
-    closeButton.addEventListener("click", () =>
-      document.body.removeChild(alertList),
-    );
+    closeButton.addEventListener("click", () => document.body.removeChild(alertList));
 
     // Assemble carousel
     carousel.appendChild(closeButton);
@@ -110,8 +101,7 @@ export default class Alert {
   showPrevAlert() {
     const messages = document.querySelectorAll(".alert-message");
     messages[this.currentIndex].classList.remove("active");
-    this.currentIndex =
-      (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;
+    this.currentIndex = (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;
     messages[this.currentIndex].classList.add("active");
   }
 }
