@@ -89,7 +89,7 @@ p {
   margin-top: -1.3em;
 }
 
-.logo--square>div {
+.logo--square > div {
   margin-top: -1.7em;
 }
 
@@ -236,7 +236,6 @@ button {
   font-size: var(--small-font);
   align-items: center;
   width: 70%;
-
 }
 
 .cart-card__image {
@@ -361,7 +360,6 @@ button {
   font-size: var(--small-font);
   cursor: pointer;
 }
-
 
 footer {
   font-size: var(--small-font);

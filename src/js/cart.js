@@ -104,7 +104,6 @@ function summingTheValue() {
 renderCartContents();
 summingTheValue();
 
-
 window.addEventListener("cartUpdated", () => {
   console.log("Evento cartUpdated disparado, atualizando carrinho");
   renderCartContents();
