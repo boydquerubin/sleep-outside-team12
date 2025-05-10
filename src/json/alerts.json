@@ -1,0 +1,32 @@
+[
+  {
+    "message": "This is only a test",
+    "background": "#f0a868",
+    "color": "#303030"
+  },
+  {
+    "message": "New promotion: 20% off tents!",
+    "background": "#525b0f",
+    "color": "#d0d0d0"
+  },
+  {
+    "message": "New promotion: 15% off sleeping bags!",
+    "background": "#8a470c",
+    "color": "#d0d0d0"
+  },
+  {
+    "message": "New promotion: 10% off backpacks!",
+    "background": "#0066cc",
+    "color": "#ffffff"
+  },
+  {
+    "message": "New promotion: 5% off all items!",
+    "background": "#cc3300",
+    "color": "#ffffff"
+  },
+  {
+    "message": "New promotion: Free shipping on orders over $50!",
+    "background": "#006600",
+    "color": "#ffffff"
+  }
+]
