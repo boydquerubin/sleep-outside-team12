@@ -1,7 +1,9 @@
+/* eslint-disable no-console */
 export default class Alert {
   constructor() {
     this.alerts = [];
     this.currentIndex = 0;
+    this.carouselInterval = null;
     this.init();
   }
 
@@ -79,9 +81,11 @@ export default class Alert {
     const closeButton = document.createElement("button");
     closeButton.className = "alert-close";
     closeButton.textContent = "✕";
-    closeButton.addEventListener("click", () =>
-      document.body.removeChild(alertList),
-    );
+
+    closeButton.addEventListener("click", () => {
+      this.stopCarousel();
+      document.body.removeChild(alertList);
+    });
 
     // Assemble carousel
     carousel.appendChild(closeButton);
@@ -95,13 +99,21 @@ export default class Alert {
   }
 
   startCarousel() {
-    setInterval(() => {
+    this.carouselInterval = setInterval(() => {
       this.showNextAlert();
     }, 5000); // Cycle every 5 seconds
   }
 
+  stopCarousel() {
+    if (this.carouselInterval) {
+      clearInterval(this.carouselInterval);
+      this.carouselInterval = null; // Reset interval ID
+    }
+  }
+
   showNextAlert() {
     const messages = document.querySelectorAll(".alert-message");
+    if (messages.length === 0) return;
     messages[this.currentIndex].classList.remove("active");
     this.currentIndex = (this.currentIndex + 1) % this.alerts.length;
     messages[this.currentIndex].classList.add("active");
@@ -109,6 +121,7 @@ export default class Alert {
 
   showPrevAlert() {
     const messages = document.querySelectorAll(".alert-message");
+    if (messages.length === 0) return; // Safety check
     messages[this.currentIndex].classList.remove("active");
     this.currentIndex =
       (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;

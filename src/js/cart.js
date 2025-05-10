@@ -1,11 +1,12 @@
-import { getLocalStorage } from "./utils.mjs";
+/* eslint-disable no-console */
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
   const productList = document.querySelector(".product-list");
 
   if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
-    console.log("The car is empty");
+    console.log("The cart is empty");
     productList.innerHTML = "<p>Your cart is empty.</p>";
     return;
   }
@@ -33,6 +34,7 @@ function renderCartContents() {
       )
       .map((item) => cartItemTemplate(item));
     productList.innerHTML = htmlItems.join("");
+    attachRemoveButtonListeners();
   } catch (error) {
     console.error("Error to render the items from the cart", error);
     productList.innerHTML = "<p>Error loading cart. Please try again.</p>";
@@ -61,21 +63,45 @@ function consolidateCartItems(cartItems) {
 
 function cartItemTemplate(item) {
   const newItem = `<li class="cart-card divider">
-  <a href="#" class="cart-card__image">
-    <img
-      src="${item.Image}"
-      alt="${item.Name}"
-    />
-  </a>
-  <a href="#">
-    <h2 class="card__name">${item.Name}</h2>
-  </a>
-  <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-  <p class="cart-card__quantity">qty: ${item.Quantity}</p>
-  <p class="cart-card__price">$${item.FinalPrice}</p>
-</li>`;
+    <a href="#" class="cart-card__image">
+      <img
+        src="${item.Image}"
+        alt="${item.Name}"
+      />
+    </a>
+    <a href="#">
+      <h2 class="card__name">${item.Name}</h2>
+    </a>
+    <p class="cart-card__color">${item.Colors[0].ColorName}</p>
+    <p class="cart-card__quantity">qty: ${item.Quantity}</p>
+    <p class="cart-card__price">$${item.FinalPrice}</p>
+    <span class="cart-card__remove" data-id="${item.Id}" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">✕</span>
+  </li>`;
 
   return newItem;
+}
+
+function attachRemoveButtonListeners() {
+  const removeButtons = document.querySelectorAll(".cart-card__remove");
+  removeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const itemId = button.getAttribute("data-id");
+      removeCartItem(itemId);
+    });
+  });
+}
+
+function removeCartItem(itemId) {
+  let cartItems = getLocalStorage("so-cart");
+  if (!Array.isArray(cartItems)) {
+    cartItems = [];
+  }
+  cartItems = cartItems.filter((item) => item.Id !== itemId);
+  setLocalStorage("so-cart", cartItems);
+  console.log(`Item with ID ${itemId} removed from cart`);
+  renderCartContents();
+  summingTheValue();
+  window.dispatchEvent(new Event("cartUpdated"));
 }
 
 function clearCart() {
