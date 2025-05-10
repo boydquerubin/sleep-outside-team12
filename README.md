@@ -20,6 +20,6 @@
 - `npm run build` to build final files when you are ready to turn in.
 
 ### Link to the website
-- https://tranquil-snickerdoodle-ed86a9.netlify.app/
+- https://meek-llama-01151b.netlify.app/
 ---
 _BYU-Pathway Worldwide improves lives through access to spiritually based, online affordable higher education. Its mission is to develop disciples of Jesus Christ who are leaders in their homes, the Church, and their communities._
