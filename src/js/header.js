@@ -8,7 +8,7 @@ function initCartCount() {
     console.error("Elemento .cart a não encontrado");
     return;
   }
-  
+
   // Create the cart count span if it doesn't exist
   let cartCountElement = document.getElementById("cart-count");
   if (!cartCountElement) {
@@ -18,7 +18,7 @@ function initCartCount() {
     cartLink.appendChild(cartCountElement);
     console.log("cart-count span criado");
   }
-  
+
   updateCartCount();
 }
 

@@ -25,10 +25,17 @@ export default class Alert {
     try {
       console.log("Attempting to fetch /json/alerts.json");
       const response = await fetch("/json/alerts.json");
-      console.log("Fetch response status:", response.status, "OK:", response.ok);
+      console.log(
+        "Fetch response status:",
+        response.status,
+        "OK:",
+        response.ok,
+      );
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(`HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`);
+        throw new Error(
+          `HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`,
+        );
       }
       return await response.json();
     } catch (error) {
@@ -74,6 +81,7 @@ export default class Alert {
     const closeButton = document.createElement("button");
     closeButton.className = "alert-close";
     closeButton.textContent = "✕";
+
     closeButton.addEventListener("click", () => {
       this.stopCarousel();
       document.body.removeChild(alertList);
@@ -115,7 +123,8 @@ export default class Alert {
     const messages = document.querySelectorAll(".alert-message");
     if (messages.length === 0) return; // Safety check
     messages[this.currentIndex].classList.remove("active");
-    this.currentIndex = (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;
+    this.currentIndex =
+      (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;
     messages[this.currentIndex].classList.add("active");
   }
 }
