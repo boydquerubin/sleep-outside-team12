@@ -1,0 +1,1 @@
+this.path = `../json/${this.category}.json`;
