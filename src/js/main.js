@@ -1,17 +1,10 @@
-import { getLocalStorage } from "./utils.mjs";
+import ProductData from "./productData.mjs";
+import ProductList from "./productList.mjs";
 
-// Function to update the cart count display
-function updateCartCount() {
-  const cartItems = getLocalStorage("so-cart") || [];
-  const cartCountElement = document.getElementById("cart-count");
-  if (cartCountElement) {
-    cartCountElement.textContent = cartItems.length;
-    // Hide the count if the cart is empty
-    cartCountElement.style.display = cartItems.length > 0 ? "block" : "none";
-  }
-}
+const dataSource = new ProductData("tents");
 
-// Initialize cart count when the page loads
-document.addEventListener("DOMContentLoaded", updateCartCount);
-// Update cart count when cart is updated
-window.addEventListener("cartUpdated", updateCartCount);
+const element = document.querySelector(".product-list");
+
+const productList = new ProductList("Tents", dataSource, element);
+
+productList.init();
