@@ -62,7 +62,27 @@ export default class ProductDetails {
       img.src = this.product.Image.replace('..', '');
       img.alt = this.product.Name;
     }
-    if (price) price.textContent = `$${this.product.FinalPrice}`;
+    
+    // replacing this line -> "if (price) price.textContent = `$${this.product.FinalPrice}`;"
+
+    if (price) {
+            const final = this.product.FinalPrice;
+            const original = this.product.SuggestedRetailPrice;
+
+            if (final < original) {
+                const amountSaved = (original - final).toFixed(2);
+                const percentSaved = Math.round(((original - final) / original) * 100);
+
+                price.innerHTML = `
+                <span class="original-price">$${original.toFixed(2)}</span>
+                <span class="final-price">$${final.toFixed(2)}</span>
+                <span class="savings">You save $${amountSaved} (${percentSaved}%)</span>
+                `;
+            } else {
+                price.textContent = `$${final.toFixed(2)}`;
+            }
+        }
+
     if (color) color.textContent = this.product.Colors[0].ColorName;
     if (description) description.innerHTML = this.product.DescriptionHtmlSimple;
     if (addToCart) addToCart.dataset.id = this.product.Id;
