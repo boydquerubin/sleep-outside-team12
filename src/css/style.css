@@ -393,6 +393,40 @@ button {
   cursor: pointer;
 }
 
+
+/* discount indicators */
+.discount-badge {
+  display: inline-block;
+  background-color: red;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  margin-top: 8px;
+  border-radius: 4px;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #888;
+  margin-right: 8px;
+  font-size: 1rem;
+}
+
+.final-price {
+  color: #000;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.savings {
+  color: green;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+
 footer {
   font-size: var(--small-font);
   padding: 1em;
