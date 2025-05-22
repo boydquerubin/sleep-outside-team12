@@ -413,3 +413,27 @@ footer {
     grid-template-columns: 150px auto 15%;
   }
 }
+
+
+
+
+.search {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#search-input {
+  padding: 10px;
+  border: none;
+  border-radius: 5px 0 0 5px;
+}
+
+.search button[type="submit"] {
+  padding: 10px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background-color: #4CAF50;
+  color: #fff;
+  cursor: pointer;
+}

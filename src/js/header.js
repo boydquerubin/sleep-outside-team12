@@ -26,18 +26,23 @@ function initCartCount() {
 function updateCartCount() {
   try {
     const cartItems = getLocalStorage("so-cart") || [];
-    console.log("Itens no carrinho:", cartItems.length);
+    if (!Array.isArray(cartItems)) {
+      console.error("Invalid cart items data");
+      return;
+    }
+
     const cartCountElement = document.getElementById("cart-count");
     if (cartCountElement) {
       cartCountElement.textContent = cartItems.length;
       cartCountElement.style.display = cartItems.length > 0 ? "block" : "none";
     } else {
-      console.error("cart-count element não encontrado");
+      console.error("cart-count element not found");
     }
   } catch (error) {
-    console.error("Erro ao atualizar cart count:", error);
+    console.error("Error updating cart count:", error);
   }
 }
+
 
 // Initialize cart count when the page loads
 document.addEventListener("DOMContentLoaded", () => {
