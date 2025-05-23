@@ -1,4 +1,3 @@
-// src/js/ProductDetails.mjs
 import { getLocalStorage, setLocalStorage } from './utils.mjs';
 
 export default class ProductDetails {
