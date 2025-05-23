@@ -218,7 +218,7 @@ button {
 }
 
 .cart-card {
-  position: relative; 
+  position: relative;
   margin-bottom: 1rem;
   padding: 1rem;
 }
@@ -393,7 +393,6 @@ button {
   cursor: pointer;
 }
 
-
 /* discount indicators */
 .discount-badge {
   display: inline-block;
@@ -426,7 +425,6 @@ button {
   font-weight: 500;
 }
 
-
 footer {
   font-size: var(--small-font);
   padding: 1em;
@@ -446,4 +444,30 @@ footer {
     font-size: inherit;
     grid-template-columns: 150px auto 15%;
   }
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin: 0 20px;
+}
+
+#search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  width: 200px;
+}
+
+#search-button {
+  padding: 10px;
+  border: none;
+  border-radius: 0 5px 5px 0;
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+
+#search-button:hover {
+  background-color: #3e8e41;
 }
