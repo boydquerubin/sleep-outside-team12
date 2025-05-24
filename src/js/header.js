@@ -2,7 +2,6 @@ import { getLocalStorage } from "./utils.mjs";
 
 // Function to initialize the cart count badge
 function initCartCount() {
-  console.log("Inicializando cart count");
   const cartLink = document.querySelector(".cart a");
   if (!cartLink) {
     console.error("Elemento .cart a não encontrado");
@@ -16,7 +15,6 @@ function initCartCount() {
     cartCountElement.id = "cart-count";
     cartCountElement.className = "cart-count";
     cartLink.appendChild(cartCountElement);
-    console.log("cart-count span criado");
   }
 
   updateCartCount();
@@ -26,7 +24,6 @@ function initCartCount() {
 function updateCartCount() {
   try {
     const cartItems = getLocalStorage("so-cart") || [];
-    console.log("Itens no carrinho:", cartItems.length);
     const cartCountElement = document.getElementById("cart-count");
     if (cartCountElement) {
       cartCountElement.textContent = cartItems.length;
@@ -39,14 +36,12 @@ function updateCartCount() {
   }
 }
 
-// Initialize cart count when the page loads
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOMContentLoaded disparado");
+// Initialize cart count after header/footer are loaded
+window.addEventListener("headerFooterLoaded", () => {
   initCartCount();
 });
 
 // Update cart count when cart is updated
 window.addEventListener("cartUpdated", () => {
-  console.log("Evento cartUpdated disparado");
   updateCartCount();
 });
