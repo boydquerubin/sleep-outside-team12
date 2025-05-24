@@ -456,9 +456,9 @@ footer {
 }
 
 .product-grid a {
-  text-decoration: none;
-  color: var(--dark-grey);
   font-size: var(--small-font);
+  color: var(--dark-grey);
+  text-decoration: none;
 }
 
 .product-grid img {
@@ -477,11 +477,11 @@ footer {
 .product-list {
   display: flex;
   flex-flow: row wrap;
-  list-style-type: none;
   align-items: stretch;
+  list-style-type: none;
 }
 
 .product-list a {
-  text-decoration: none;
   color: var(--dark-grey);
+  text-decoration: none;
 }
