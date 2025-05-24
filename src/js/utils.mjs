@@ -37,6 +37,33 @@ export function setClick(selector, callback) {
   }
 }
 
+export function getParam(param) {
+  const queryString = window.location.search;
+  const urlParams = new URLSearchParams(queryString);
+  const product = urlParams.get(param);
+  return product;
+}
+
+export function renderListWithTemplate(template, parentElement, list, position = "afterbegin", clear = false) {
+  const htmlStrings = list.map(template);
+  if (clear) {
+    parentElement.innerHTML = "";
+  }
+  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+}
+
+export function renderWithTemplate(template, parentElement, data, callback) {
+  // O `innerHTML` do elemento pai é definido com o conteúdo do template
+  // Isso sobrescreve qualquer conteúdo existente.
+  parentElement.innerHTML = template; 
+  
+  // Se houver um callback, ele é executado com os dados.
+  // Isso é útil para adicionar funcionalidade ou manipular o DOM depois que o template é renderizado.
+  if (callback) {
+    callback(data);
+  }
+}
+
 async function loadTemplate(path) {
   try {
     const res = await fetch(path);
