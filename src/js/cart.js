@@ -1,11 +1,13 @@
-/* eslint-disable no-console */
-import { getLocalStorage, setLocalStorage, loadHeaderFooter  } from "./utils.mjs";
-
-loadHeaderFooter();
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
   const productList = document.querySelector(".product-list");
+
+  if (!productList) {
+    console.error("Element .product-list not found in the DOM");
+    return;
+  }
 
   if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
     console.log("The cart is empty");
@@ -109,12 +111,20 @@ function removeCartItem(itemId) {
 function clearCart() {
   localStorage.removeItem("so-cart");
   const productList = document.querySelector(".product-list");
-  productList.innerHTML = "<p>Your cart is empty.</p>";
+  if (productList) {
+    productList.innerHTML = "<p>Your cart is empty.</p>";
+  }
 }
 
 function summingTheValue() {
   const cartItems = getLocalStorage("so-cart");
-  const productList = document.querySelector(".product-list");
+  const rendering = document.querySelector(".total_value_number_span");
+
+  if (!rendering) {
+    console.error("Element .total_value_number_span not found in the DOM");
+    return;
+  }
+
   const newconsolidateCartItems = consolidateCartItems(cartItems);
   let totalPrice = 0;
 
@@ -125,14 +135,15 @@ function summingTheValue() {
     totalPrice += price * quantity;
   }
 
-  const rendering = document.querySelector(".total_value_number_span");
   rendering.textContent = totalPrice.toFixed(2);
 }
 
-renderCartContents();
-summingTheValue();
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("cart.js: DOMContentLoaded triggered");
+  renderCartContents();
+  summingTheValue();
+});
 
 window.addEventListener("cartUpdated", () => {
-  console.log("Evento cartUpdated disparado, atualizando carrinho");
   renderCartContents();
 });

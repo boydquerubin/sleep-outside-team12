@@ -4,20 +4,35 @@ export default class Alert {
     this.alerts = [];
     this.currentIndex = 0;
     this.carouselInterval = null;
+    console.log("Alert constructor called");
     this.init();
   }
 
   async init() {
+    console.log("!!!Alert init started");
     try {
       this.alerts = await this.fetchAlerts();
-      if (this.alerts && this.alerts.length > 0) {
-        this.renderAlerts();
-        if (this.alerts.length > 1) {
-          this.startCarousel();
-        }
+      console.log("Alerts fetched:", this.alerts);
+      if (!this.alerts || this.alerts.length === 0) {
+        console.warn("No alerts found, using fallback alert");
+        this.alerts = [{
+          message: "Bem-vindo ao Sleep Outside!",
+          background: "#ff0",
+          color: "#000"
+        }];
+      }
+      this.renderAlerts();
+      if (this.alerts.length > 1) {
+        this.startCarousel();
       }
     } catch (error) {
       console.error("Error initializing alerts:", error);
+      this.alerts = [{
+        message: "Erro ao carregar alertas. Tente novamente.",
+        background: "#f00",
+        color: "#fff"
+      }];
+      this.renderAlerts();
     }
   }
 
@@ -25,19 +40,14 @@ export default class Alert {
     try {
       console.log("Attempting to fetch /json/alerts.json");
       const response = await fetch("/json/alerts.json");
-      console.log(
-        "Fetch response status:",
-        response.status,
-        "OK:",
-        response.ok,
-      );
+      console.log("Fetch response status:", response.status, "OK:", response.ok);
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(
-          `HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`,
-        );
+        throw new Error(`HTTP error! Status: ${response.status}, URL: /json/alerts.json, Response: ${text.slice(0, 100)}`);
       }
-      return await response.json();
+      const data = await response.json();
+      console.log("Fetched alerts data:", data);
+      return data;
     } catch (error) {
       console.error("Error fetching alerts.json:", error);
       return [];
@@ -45,6 +55,7 @@ export default class Alert {
   }
 
   renderAlerts() {
+    console.log("!!!Rendering alerts");
     const alertList = document.createElement("section");
     alertList.className = "alert-list";
 
@@ -81,11 +92,7 @@ export default class Alert {
     const closeButton = document.createElement("button");
     closeButton.className = "alert-close";
     closeButton.textContent = "✕";
-
-    closeButton.addEventListener("click", () => {
-      this.stopCarousel();
-      document.body.removeChild(alertList);
-    });
+    closeButton.addEventListener("click", () => this.closeAlert(alertList));
 
     // Assemble carousel
     carousel.appendChild(closeButton);
@@ -96,18 +103,56 @@ export default class Alert {
 
     // Append to body
     document.body.appendChild(alertList);
+    console.log("!!!Alert appended to body");
+
+    // Add click outside to close functionality with delay
+    setTimeout(() => {
+      document.addEventListener("click", (event) => this.handleOutsideClick(event, alertList, carousel));
+      console.log("Click outside listener attached");
+    }, 500); // 500ms delay to avoid page-load events
+  }
+
+  handleOutsideClick(event, alertList, carousel) {
+    console.log("Click event triggered:", {
+      target: event.target.tagName,
+      className: event.target.className,
+      isTrusted: event.isTrusted
+    });
+
+    // Only process user-initiated clicks
+    if (!event.isTrusted) {
+      console.log("Ignoring non-user-initiated click");
+      return;
+    }
+
+    // Check if the click is outside the carousel
+    if (!carousel.contains(event.target)) {
+      console.log("Outside click detected, closing alert");
+      this.closeAlert(alertList);
+      document.removeEventListener("click", this.handleOutsideClick);
+    }
+  }
+
+  closeAlert(alertList) {
+    console.log("Closing alert");
+    this.stopCarousel();
+    if (alertList && alertList.parentNode) {
+      document.body.removeChild(alertList);
+    }
   }
 
   startCarousel() {
+    console.log("Starting carousel");
     this.carouselInterval = setInterval(() => {
       this.showNextAlert();
     }, 5000); // Cycle every 5 seconds
   }
 
   stopCarousel() {
+    console.log("Stopping carousel");
     if (this.carouselInterval) {
       clearInterval(this.carouselInterval);
-      this.carouselInterval = null; // Reset interval ID
+      this.carouselInterval = null;
     }
   }
 
@@ -121,7 +166,7 @@ export default class Alert {
 
   showPrevAlert() {
     const messages = document.querySelectorAll(".alert-message");
-    if (messages.length === 0) return; // Safety check
+    if (messages.length === 0) return;
     messages[this.currentIndex].classList.remove("active");
     this.currentIndex =
       (this.currentIndex - 1 + this.alerts.length) % this.alerts.length;
