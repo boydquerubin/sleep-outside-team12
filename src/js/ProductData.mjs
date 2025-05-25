@@ -1,3 +1,5 @@
+const baseURL = import.meta.env.VITE_SERVER_URL;
+
 function convertToJson(res) {
   if (res.ok) {
     return res.json();
@@ -7,37 +9,36 @@ function convertToJson(res) {
 }
 
 export default class ProductData {
-  constructor() {}
+  constructor() {
+  }
 
   async getData(category) {
     try {
-      const path = `/json/${category}.json`;
-      const response = await fetch(path);
+      const response = await fetch(`${baseURL}products/search/${category}`);
       const data = await convertToJson(response);
       console.log(`Raw data for ${category}:`, data);
-      const products = data.Result || data;
+      const products = data.Result || data; 
       console.log(`Processed products for ${category}:`, products);
       return products;
     } catch (error) {
-      console.error(`Error fetching /json/${category}.json:`, error);
+      console.error(`Error fetching ${baseURL}products/search/${category}:`, error);
       return [];
     }
   }
 
   async findProductById(id) {
     try {
-      const categories = ['tents', 'backpacks', 'sleeping-bags'];
-      for (const category of categories) {
-        const products = await this.getData(category);
-        const product = products.find((item) => item.Id === id);
-        if (product) {
-          return product;
-        }
+      const response = await fetch(`${baseURL}product/${id}`);
+      const data = await convertToJson(response);
+      const product = data.Result || data;
+      if (!product) {
+        console.warn(`Product not found for ID: ${id}`);
+        return null;
       }
-      console.warn(`Product not found for ID: ${id}`);
-      return null;
+      console.log(`Product found for ID ${id}:`, product);
+      return product;
     } catch (error) {
-      console.error('Error finding product:', error);
+      console.error(`Error finding product with ID ${id}:`, error);
       return null;
     }
   }
