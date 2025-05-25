@@ -9,17 +9,14 @@ export default class ProductDetails {
 
   async init() {
     try {
-      // Busca o produto pelo ID
       this.product = await this.dataSource.findProductById(this.productId);
       if (!this.product) {
         console.error(`Product not found for ID: ${this.productId}`);
         document.querySelector('.product-detail').innerHTML = '<p>Product not found.</p>';
         return;
       }
-      console.log('Product data:', this.product); // Log para depuração
-      // Renderiza os detalhes do produto
+      console.log('Product data:', this.product);
       this.renderProductDetails();
-      // Adiciona o listener para o botão "Add to Cart"
       const addToCartButton = document.getElementById('addToCart');
       if (addToCartButton) {
         addToCartButton.addEventListener('click', this.addProductToCart.bind(this));
@@ -39,20 +36,17 @@ export default class ProductDetails {
         cartItems = [];
       }
 
-      // Procurar o item no carrinho
       const existingItem = cartItems.find((item) => item.Id === this.product.Id);
 
       if (existingItem) {
-        // Incrementar a quantidade se o item já existe
         existingItem.Quantity = (existingItem.Quantity || 1) + 1;
       } else {
-        // Adicionar o item com Quantity: 1 se não existe
         cartItems.push({ ...this.product, Quantity: 1 });
       }
 
       setLocalStorage('so-cart', cartItems);
       console.log('Cart updated:', cartItems);
-      window.dispatchEvent(new Event('cartUpdated')); // Dispara evento para atualizar o carrinho
+      window.dispatchEvent(new Event('cartUpdated'));
 
       // Feedback visual
       const addToCartButton = document.getElementById('addToCart');
@@ -69,16 +63,14 @@ export default class ProductDetails {
 
   renderProductDetails() {
     try {
-      // Seletores do HTML
-      const brand = document.querySelector('.product__brand'); // <h3>
-      const name = document.querySelector('.product__name'); // <h2>
-      const image = document.querySelector('.product__image'); // <img>
-      const price = document.querySelector('.product-card__price'); // <p>
-      const color = document.querySelector('.product__color'); // <p>
-      const description = document.querySelector('.product__description'); // <p>
-      const addToCart = document.getElementById('addToCart'); // <button>
+      const brand = document.querySelector('.product__brand');
+      const name = document.querySelector('.product__name');
+      const image = document.querySelector('.product__image');
+      const price = document.querySelector('.product-card__price');
+      const color = document.querySelector('.product__color');
+      const description = document.querySelector('.product__description');
+      const addToCart = document.getElementById('addToCart');
 
-      // Verifica se todos os elementos existem
       if (!brand || !name || !image || !price || !color || !description || !addToCart) {
         console.error('One or more DOM elements not found for product details', {
           brand, name, image, price, color, description, addToCart
@@ -87,22 +79,19 @@ export default class ProductDetails {
         return;
       }
 
-      // Suporta Image (tents) e Images.PrimaryMedium (backpacks, sleeping-bags)
       const imageSrc = this.product.Images?.PrimaryMedium || this.product.Image;
       if (!imageSrc) {
         console.warn(`No image source found for product ID: ${this.product.Id}`);
-        image.src = '/images/placeholder.jpg'; // Placeholder se necessário
+        image.src = '/images/placeholder.jpg';
         image.alt = 'No image available';
       } else {
-        image.src = imageSrc.replace('..', ''); // Remove '..' para caminhos relativos
+        image.src = imageSrc.replace('..', '');
         image.alt = this.product.NameWithoutBrand || 'Product Image';
       }
 
-      // Atualiza os elementos com os dados do produto
       brand.textContent = this.product.Brand?.Name || 'Unknown Brand';
       name.textContent = this.product.NameWithoutBrand || 'Unknown Product';
 
-      // Lógica de preço com desconto
       const finalPrice = this.product.FinalPrice;
       const originalPrice = this.product.SuggestedRetailPrice;
       if (finalPrice && originalPrice && finalPrice < originalPrice) {
@@ -117,7 +106,6 @@ export default class ProductDetails {
         price.textContent = finalPrice ? `$${finalPrice.toFixed(2)}` : 'Price unavailable';
       }
 
-      // Validação adicional para Colors
       color.textContent = this.product.Colors?.length > 0 ? this.product.Colors[0].ColorName || 'N/A' : 'N/A';
       description.innerHTML = this.product.DescriptionHtmlSimple || 'No description available';
       addToCart.dataset.id = this.product.Id || '';

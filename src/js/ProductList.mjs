@@ -1,11 +1,10 @@
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-  // Suporta Images.PrimaryMedium (backpacks, sleeping-bags) e Image (tents)
   const imageSrc = product.Images?.PrimaryMedium || product.Image;
   if (!imageSrc) {
     console.error(`No image source found for product ID: ${product.Id}`, product);
-    return ''; // Evita renderizar cards sem imagem
+    return '';
   }
 
   return `
@@ -30,7 +29,7 @@ export default class ProductList {
   async init() {
     try {
       const list = await this.dataSource.getData(this.category);
-      console.log(`Products for ${this.category}:`, list); // Log para depuração
+      console.log(`Products for ${this.category}:`, list);
       this.renderList(list);
       
       const titleElement = document.querySelector(".title");

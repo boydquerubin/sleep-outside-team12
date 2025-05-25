@@ -145,7 +145,7 @@ export default class Alert {
     console.log("Starting carousel");
     this.carouselInterval = setInterval(() => {
       this.showNextAlert();
-    }, 5000); // Cycle every 5 seconds
+    }, 5000);
   }
 
   stopCarousel() {
