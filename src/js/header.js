@@ -4,7 +4,7 @@ import { getLocalStorage } from "./utils.mjs";
 function initCartCount() {
   const cartLink = document.querySelector(".cart a");
   if (!cartLink) {
-    console.error("Elemento .cart a não encontrado");
+    console.error("Element .cart a not found");
     return;
   }
 
@@ -26,8 +26,9 @@ function updateCartCount() {
     const cartItems = getLocalStorage("so-cart") || [];
     const cartCountElement = document.getElementById("cart-count");
     if (cartCountElement) {
-      cartCountElement.textContent = cartItems.length;
-      cartCountElement.style.display = cartItems.length > 0 ? "block" : "none";
+      const totalQuantity = cartItems.reduce((sum, item) => sum + (item.Quantity || 1), 0);
+      cartCountElement.textContent = totalQuantity > 0 ? totalQuantity : '';
+      cartCountElement.style.display = totalQuantity > 0 ? "block" : "none";
     } else {
       console.error("cart-count element não encontrado");
     }

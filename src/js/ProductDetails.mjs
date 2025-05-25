@@ -35,10 +35,26 @@ export default class ProductDetails {
   addProductToCart() {
     try {
       const cartItems = getLocalStorage('so-cart') || [];
-      cartItems.push(this.product);
+      if (!Array.isArray(cartItems)) {
+        cartItems = [];
+      }
+
+      // Procurar o item no carrinho
+      const existingItem = cartItems.find((item) => item.Id === this.product.Id);
+
+      if (existingItem) {
+        // Incrementar a quantidade se o item já existe
+        existingItem.Quantity = (existingItem.Quantity || 1) + 1;
+      } else {
+        // Adicionar o item com Quantity: 1 se não existe
+        cartItems.push({ ...this.product, Quantity: 1 });
+      }
+
       setLocalStorage('so-cart', cartItems);
+      console.log('Cart updated:', cartItems);
       window.dispatchEvent(new Event('cartUpdated')); // Dispara evento para atualizar o carrinho
-      // Feedback visual (opcional, requer CSS)
+
+      // Feedback visual
       const addToCartButton = document.getElementById('addToCart');
       if (addToCartButton) {
         addToCartButton.textContent = 'Added!';

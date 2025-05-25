@@ -5,15 +5,13 @@ import ProductDetails from './ProductDetails.mjs';
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     console.log('Loading header and footer...');
-    await loadHeaderFooter(); // Aguarda o carregamento do header e footer
+    await loadHeaderFooter();
 
     const productID = getParam('product');
     console.log('Product ID from URL:', productID);
 
-    // Verifica se estamos na página de detalhes (presença do parâmetro product)
     if (!productID) {
       console.warn('No product ID provided in URL, assuming index page');
-      // Aqui você pode decidir o que fazer se não houver productID (ex.: carregar a página inicial)
       return;
     }
 
@@ -21,9 +19,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const dataSource = new ProductData();
     const product = new ProductDetails(productID, dataSource);
     await product.init();
+
+    window.addEventListener('cartUpdated', () => {
+      console.log('Product added to cart, cart updated.');
+    });
   } catch (error) {
     console.error('Error initializing product page:', error);
-    // Exibe erro no DOM apenas se for a página de detalhes
     if (getParam('product')) {
       document.querySelector('main').innerHTML = '<p>Error loading product page.</p>';
     }
