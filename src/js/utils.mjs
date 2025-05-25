@@ -37,33 +37,71 @@ export function setClick(selector, callback) {
   }
 }
 
+// get URL parameter with validation
 export function getParam(param) {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
-  const product = urlParams.get(param);
-  return product;
-}
-
-export function renderListWithTemplate(template, parentElement, list, position = "afterbegin", clear = false) {
-  const htmlStrings = list.map(template);
-  if (clear) {
-    parentElement.innerHTML = "";
+  const value = urlParams.get(param);
+  if (!value) {
+    console.warn(`Parameter "${param}" not found in URL`);
   }
-  parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+  return value;
 }
 
+// render a list of items using a template function
+export function renderListWithTemplate(template, parentElement, list, position = "afterbegin", clear = false) {
+  if (!parentElement) {
+    console.error('Parent element is null or undefined');
+    return;
+  }
+  if (!Array.isArray(list)) {
+    console.error('List is not an array:', list);
+    parentElement.innerHTML = '<p>No products available.</p>';
+    return;
+  }
+  if (list.length === 0) {
+    console.warn('List is empty');
+    parentElement.innerHTML = '<p>No products found.</p>';
+    return;
+  }
+  try {
+    const htmlStrings = list.map(item => {
+      try {
+        const html = template(item);
+        return html || ''; // Garante que html seja uma string
+      } catch (error) {
+        console.error(`Error rendering template for item ID: ${item.Id || 'unknown'}`, item, error);
+        return '';
+      }
+    }).filter(html => html.trim()); // Remove strings vazias ou apenas espaços
+    if (htmlStrings.length === 0) {
+      console.warn('No valid HTML generated for the list');
+      parentElement.innerHTML = '<p>No valid products to display.</p>';
+      return;
+    }
+    if (clear) {
+      parentElement.innerHTML = "";
+    }
+    parentElement.insertAdjacentHTML(position, htmlStrings.join(""));
+  } catch (error) {
+    console.error('Error rendering list:', error);
+    parentElement.innerHTML = '<p>Error rendering product list.</p>';
+  }
+}
+
+// render a single template with optional callback
 export function renderWithTemplate(template, parentElement, data, callback) {
-  // O `innerHTML` do elemento pai é definido com o conteúdo do template
-  // Isso sobrescreve qualquer conteúdo existente.
-  parentElement.innerHTML = template; 
-  
-  // Se houver um callback, ele é executado com os dados.
-  // Isso é útil para adicionar funcionalidade ou manipular o DOM depois que o template é renderizado.
+  if (!parentElement) {
+    console.error('Parent element is null or undefined');
+    return;
+  }
+  parentElement.innerHTML = template;
   if (callback) {
     callback(data);
   }
 }
 
+// load a template file
 async function loadTemplate(path) {
   try {
     const res = await fetch(path);
@@ -77,6 +115,7 @@ async function loadTemplate(path) {
   }
 }
 
+// load header and footer templates
 export async function loadHeaderFooter() {
   console.log("Attempting to load header/footer. DOM readyState:", document.readyState);
   try {
@@ -102,5 +141,16 @@ export async function loadHeaderFooter() {
     window.dispatchEvent(new Event("headerFooterLoaded"));
   } catch (error) {
     console.error("Error loading header/footer templates:", error);
+  }
+}
+
+// check if a file exists (useful for debugging JSON files)
+export async function checkFileExists(path) {
+  try {
+    const response = await fetch(path, { method: 'HEAD' });
+    return response.ok;
+  } catch (error) {
+    console.error(`Error checking file existence for "${path}":`, error);
+    return false;
   }
 }
