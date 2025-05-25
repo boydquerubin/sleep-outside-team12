@@ -1,11 +1,12 @@
 import { renderListWithTemplate } from "./utils.mjs";
 
 function productCardTemplate(product) {
-  const imageSrc = product.Images?.PrimaryMedium || product.Image || '/images/placeholder.jpg';
+  const imageSrc = product.Images?.PrimaryExtraLarge || product.Images?.PrimaryLarge || product.Images?.PrimaryMedium || product.Image || '/images/placeholder.jpg';
   if (!imageSrc) {
-    console.error(`No image source found for product ID: ${product.Id}`, product);
+    console.error(`No image source found for product ID: ${product.Id}`, product.Images, product.Image);
     return '';
   }
+  console.log(`Image source for ${product.Id}:`, imageSrc); // Log para depuração
 
   return `
     <li class="product-card">
@@ -28,6 +29,7 @@ export default class ProductList {
 
   async init() {
     try {
+      console.log(`Starting init for category: ${this.category}`);
       const list = await this.dataSource.getData(this.category);
       console.log(`Products for ${this.category}:`, list);
       console.log('Sample product structure:', list[0]);
