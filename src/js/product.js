@@ -1,29 +1,32 @@
-// src/js/product.js
-import { getParam, loadHeaderFooter  } from './utils.mjs';
+import { getParam, loadHeaderFooter } from './utils.mjs';
 import ProductData from './ProductData.mjs';
 import ProductDetails from './ProductDetails.mjs';
 
-loadHeaderFooter();
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    console.log('Loading header and footer...');
+    await loadHeaderFooter();
 
-const dataSource = new ProductData("tents");
-const productID = getParam("product");
+    const productID = getParam('product');
+    console.log('Product ID from URL:', productID);
 
-const product = new ProductDetails(productID, dataSource);
-product.init();
+    if (!productID) {
+      console.warn('No product ID provided in URL, assuming index page');
+      return;
+    }
 
-// // Get product ID from URL
-// const productId = getParam('product');
-// if (!productId) {
-//   console.error('No product ID provided in URL');
-// } else {
-//   const dataSource = new ProductData('tents');
-//   const product = new ProductDetails(productId, dataSource);
+    console.log('Initializing ProductDetails for product ID:', productID);
+    const dataSource = new ProductData();
+    const product = new ProductDetails(productID, dataSource);
+    await product.init();
 
-//   // Initialize product details
-//   product.init();
-
-//   (async () => {
-//     const productData = await dataSource.findProductById(productId);
-//     console.log('Product data:', productData);
-//   })();
-// }
+    window.addEventListener('cartUpdated', () => {
+      console.log('Product added to cart, cart updated.');
+    });
+  } catch (error) {
+    console.error('Error initializing product page:', error);
+    if (getParam('product')) {
+      document.querySelector('main').innerHTML = '<p>Error loading product page.</p>';
+    }
+  }
+});

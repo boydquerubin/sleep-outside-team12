@@ -24,13 +24,12 @@ function renderCartContents() {
   }
 
   try {
-    const consolidatedItems = consolidateCartItems(cartItems);
-    const htmlItems = consolidatedItems
+    const htmlItems = cartItems
       .filter(
         (item) =>
           item &&
           item.Id &&
-          item.Image &&
+          (item.Image || item.Images?.PrimaryMedium) &&
           item.Name &&
           item.Colors &&
           item.Colors[0] &&
@@ -39,50 +38,45 @@ function renderCartContents() {
       .map((item) => cartItemTemplate(item));
     productList.innerHTML = htmlItems.join("");
     attachRemoveButtonListeners();
+    attachQuantityButtonListeners();
   } catch (error) {
     console.error("Error to render the items from the cart", error);
     productList.innerHTML = "<p>Error loading cart. Please try again.</p>";
   }
 }
 
-function consolidateCartItems(cartItems) {
-  if (!cartItems || !Array.isArray(cartItems)) {
-    return [];
-  }
-
-  const itemMap = cartItems.reduce((acc, item) => {
-    if (!item || !item.Id) {
-      return acc;
-    }
-    if (!acc[item.Id]) {
-      acc[item.Id] = { ...item, Quantity: 1 };
-    } else {
-      acc[item.Id].Quantity += 1;
-    }
-    return acc;
-  }, {});
-
-  return Object.values(itemMap);
-}
-
 function cartItemTemplate(item) {
-  const newItem = `<li class="cart-card divider">
-    <a href="#" class="cart-card__image">
-      <img
-        src="${item.Image}"
-        alt="${item.Name}"
-      />
-    </a>
-    <a href="#">
-      <h2 class="card__name">${item.Name}</h2>
-    </a>
-    <p class="cart-card__color">${item.Colors[0].ColorName}</p>
-    <p class="cart-card__quantity">qty: ${item.Quantity}</p>
-    <p class="cart-card__price">$${item.FinalPrice}</p>
-    <span class="cart-card__remove" data-id="${item.Id}" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">✕</span>
-  </li>`;
+  try {
+    const imageSrc = item.Images?.PrimaryMedium || item.Image || "/images/placeholder.jpg";
+    const imageAlt = item.Name || "Product Image";
+    const colorName = item.Colors[0]?.ColorName || "N/A";
 
-  return newItem;
+    const newItem = `<li class="cart-card divider">
+      <a href="#" class="cart-card__image">
+        <img
+          src="${imageSrc.replace('..', '')}"
+          alt="${imageAlt}"
+          onerror="this.src='/images/placeholder.jpg'; this.alt='No image available';"
+        />
+      </a>
+      <a href="#">
+        <h2 class="card__name">${item.Name || "Unknown Product"}</h2>
+      </a>
+      <p class="cart-card__color">${colorName}</p>
+      <div class="cart-card__quantity">
+        <button class="quantity-decrease" data-id="${item.Id}">-</button>
+        <span class = "quantity">qty: ${item.Quantity || 1}</span>
+        <button class="quantity-increase" data-id="${item.Id}">+</button>
+      </div>
+      <p class="cart-card__price">$${item.FinalPrice?.toFixed(2) || "0.00"}</p>
+      <span class="cart-card__remove" data-id="${item.Id}" style="cursor: pointer; position: absolute; top: 10px; right: 10px;">✕</span>
+    </li>`;
+
+    return newItem;
+  } catch (error) {
+    console.error(`Error rendering cart item with ID ${item.Id}:`, error);
+    return `<li class="cart-card divider"><p>Error loading item ${item.Id}</p></li>`;
+  }
 }
 
 function attachRemoveButtonListeners() {
@@ -95,8 +89,55 @@ function attachRemoveButtonListeners() {
   });
 }
 
+function attachQuantityButtonListeners() {
+  const increaseButtons = document.querySelectorAll(".quantity-increase");
+  const decreaseButtons = document.querySelectorAll(".quantity-decrease");
+
+  increaseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const itemId = button.getAttribute("data-id");
+      updateCartItemQuantity(itemId, 1);
+    });
+  });
+
+  decreaseButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const itemId = button.getAttribute("data-id");
+      updateCartItemQuantity(itemId, -1);
+    });
+  });
+}
+
+function updateCartItemQuantity(itemId, change) {
+  let cartItems = getLocalStorage("so-cart") || [];
+  if (!Array.isArray(cartItems)) {
+    cartItems = [];
+  }
+
+  const itemIndex = cartItems.findIndex((item) => item.Id === itemId);
+  if (itemIndex === -1) {
+    console.warn(`Item with ID ${itemId} not found in cart`);
+    return;
+  }
+
+  const newQuantity = (cartItems[itemIndex].Quantity || 1) + change;
+
+  if (newQuantity <= 0) {
+    cartItems.splice(itemIndex, 1);
+    console.log(`Item with ID ${itemId} removed from cart due to quantity 0`);
+  } else {
+    cartItems[itemIndex].Quantity = newQuantity;
+    console.log(`Updated quantity of item ${itemId} to ${newQuantity}`);
+  }
+
+  setLocalStorage("so-cart", cartItems);
+  renderCartContents();
+  summingTheValue();
+  window.dispatchEvent(new Event("cartUpdated"));
+}
+
 function removeCartItem(itemId) {
-  let cartItems = getLocalStorage("so-cart");
+  let cartItems = getLocalStorage("so-cart") || [];
   if (!Array.isArray(cartItems)) {
     cartItems = [];
   }
@@ -125,14 +166,14 @@ function summingTheValue() {
     return;
   }
 
-  const newconsolidateCartItems = consolidateCartItems(cartItems);
   let totalPrice = 0;
-
-  for (let i = 0; i < newconsolidateCartItems.length; i++) {
-    const item = newconsolidateCartItems[i];
-    const price = item.FinalPrice;
-    const quantity = item.Quantity;
-    totalPrice += price * quantity;
+  if (cartItems && Array.isArray(cartItems)) {
+    for (let i = 0; i < cartItems.length; i++) {
+      const item = cartItems[i];
+      const price = item.FinalPrice || 0;
+      const quantity = item.Quantity || 1;
+      totalPrice += price * quantity;
+    }
   }
 
   rendering.textContent = totalPrice.toFixed(2);
