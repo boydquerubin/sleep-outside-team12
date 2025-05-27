@@ -36,7 +36,7 @@ export default class ProductDetails {
 
   addProductToCart() {
     try {
-      const cartItems = getLocalStorage("so-cart") || [];
+      let cartItems = getLocalStorage("so-cart") || [];
       if (!Array.isArray(cartItems)) {
         cartItems = [];
       }
@@ -104,13 +104,13 @@ export default class ProductDetails {
         return;
       }
 
-      // Priorizar PrimaryExtraLarge como imagem principal
       const imageSrc =
         this.product.Images?.PrimaryExtraLarge ||
         this.product.Images?.PrimaryLarge ||
         this.product.Images?.PrimaryMedium ||
-        this.product.Image;
-      console.log("Image source selected:", imageSrc); // Log para depuração
+        this.product.Image ||
+        "/images/placeholder.jpg";
+      console.log("Image source selected:", imageSrc);
       if (!imageSrc) {
         console.warn(
           `No image source found for product ID: ${this.product.Id}`,
@@ -118,12 +118,17 @@ export default class ProductDetails {
         image.src = "/images/placeholder.jpg";
         image.alt = "No image available";
       } else {
-        image.src = imageSrc; // URL absoluta da API, não precisa de replace('..', '')
+        image.src = imageSrc;
         image.alt = this.product.NameWithoutBrand || "Product Image";
       }
 
       brand.textContent = this.product.Brand?.Name || "Unknown Brand";
       name.textContent = this.product.NameWithoutBrand || "Unknown Product";
+
+      console.log("Product prices:", {
+        FinalPrice: this.product.FinalPrice,
+        SuggestedRetailPrice: this.product.SuggestedRetailPrice,
+      });
 
       const finalPrice = this.product.FinalPrice;
       const originalPrice = this.product.SuggestedRetailPrice;
@@ -133,10 +138,10 @@ export default class ProductDetails {
           ((originalPrice - finalPrice) / originalPrice) * 100,
         );
         price.innerHTML = `
-        <span class="original-price">$${originalPrice.toFixed(2)}</span>
-        <span class="final-price">$${finalPrice.toFixed(2)}</span>
-        <span class="savings">You save $${amountSaved} (${percentSaved}%)</span>
-      `;
+          <span class="original-price">$${originalPrice.toFixed(2)}</span>
+          <span class="final-price">$${finalPrice.toFixed(2)}</span>
+          <span class="savings">You save $${amountSaved} (${percentSaved}%)</span>
+        `;
       } else {
         price.textContent = finalPrice
           ? `$${finalPrice.toFixed(2)}`
