@@ -1,4 +1,4 @@
-import { getLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
 export default class CheckoutProcess {
@@ -19,6 +19,7 @@ export default class CheckoutProcess {
       this.list = getLocalStorage(this.key) || [];
       console.log("Cart items:", this.list);
       this.calculateItemSubTotal();
+      this.calculateOrderTotal();
     } catch (error) {
       console.error("Error initializing CheckoutProcess:", error);
     }
@@ -92,6 +93,10 @@ export default class CheckoutProcess {
       const formData = this.formDataToJSON(form);
       if (!this.validateForm(formData)) {
         console.log("Form validation failed: All fields are required.");
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.textContent = "Please fill out all required fields.";
+        form.appendChild(errorDiv);
         return;
       }
 
@@ -112,10 +117,30 @@ export default class CheckoutProcess {
         tax: this.tax.toFixed(2)
       };
 
+      const submitButton = form.querySelector("button[type='submit']");
+      submitButton.disabled = true;
+      submitButton.textContent = "Processing...";
+
       const response = await this.services.checkout(order);
       console.log("Order submitted successfully:", response);
+
+      // Clear cart
+      setLocalStorage(this.key, []);
+      window.dispatchEvent(new Event("cartUpdated"));
+
+      // Redirect to confirmation page with orderId
+      window.location.href = `/checkout/order-confirmation.html?orderId=${response.orderId}`;
     } catch (error) {
       console.error("Error in checkout process:", error);
+      const errorDiv = document.createElement("div");
+      errorDiv.className = "error-message";
+      errorDiv.textContent = `Order submission failed: ${error.message}`;
+      form.appendChild(errorDiv);
+      const submitButton = form.querySelector("button[type='submit']");
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = "Place Order";
+      }
     }
   }
 
