@@ -3,10 +3,22 @@ import { getLocalStorage, setLocalStorage } from "./utils.mjs";
 function renderCartContents() {
   const cartItems = getLocalStorage("so-cart");
   const productList = document.querySelector(".product-list");
+  const mainElement = document.querySelector("main.divider");
 
   if (!productList) {
     console.error("Element .product-list not found in the DOM");
     return;
+  }
+
+  if (!mainElement) {
+    console.error("Element main.divider not found in the DOM");
+    return;
+  }
+
+  // Remove any existing checkout button to avoid duplicates
+  const existingButton = document.querySelector(".button_checkout");
+  if (existingButton) {
+    existingButton.remove();
   }
 
   if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
@@ -37,6 +49,15 @@ function renderCartContents() {
       )
       .map((item) => cartItemTemplate(item));
     productList.innerHTML = htmlItems.join("");
+
+    const checkoutButton = document.createElement("button");
+    checkoutButton.className = "button_checkout";
+    checkoutButton.textContent = "Go to Checkout";
+    checkoutButton.onclick = () => {
+      window.location.href = "../checkout/index.html";
+    };
+    mainElement.appendChild(checkoutButton);
+
     attachRemoveButtonListeners();
     attachQuantityButtonListeners();
   } catch (error) {
@@ -65,7 +86,7 @@ function cartItemTemplate(item) {
       <p class="cart-card__color">${colorName}</p>
       <div class="cart-card__quantity">
         <button class="quantity-decrease" data-id="${item.Id}">-</button>
-        <span class = "quantity">qty: ${item.Quantity || 1}</span>
+        <span class="quantity">qty: ${item.Quantity || 1}</span>
         <button class="quantity-increase" data-id="${item.Id}">+</button>
       </div>
       <p class="cart-card__price">$${item.FinalPrice?.toFixed(2) || "0.00"}</p>
