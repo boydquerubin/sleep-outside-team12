@@ -98,7 +98,7 @@ p {
   color: var(--tertiary-color);
 }
 
-button {
+button, .button_checkout {
   padding: 0.5em 2em;
   background-color: var(--secondary-color);
   color: white;
@@ -107,6 +107,17 @@ button {
   border: 0;
   font-size: var(--large-font);
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.button_checkout {
+  margin-bottom: 1rem;
+}
+
+.button_checkout:hover {
+  background-color: var(--primary-color);
+  color: var(--dark-grey);
+  transform: scale(1.1);
 }
 
 .divider {
@@ -521,6 +532,63 @@ footer {
   width: 100%;
   height: auto;
   max-width: 300px;
+}
+
+/* Form styles */
+.checkout-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.checkout-form fieldset {
+  border: 1px solid #ccc;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.checkout-form legend {
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.checkout-form label {
+  display: block;
+  margin: 0.5rem 0 0.2rem;
+  font-weight: bold;
+}
+
+.checkout-form input {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.checkout-form input.error {
+  border-color: red;
+  background-color: #fff5f5;
+}
+
+/* Order summary styles */
+.order-summary {
+  max-width: 600px;
+  margin: 1rem auto;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.order-summary p {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5rem 0;
+}
+
+.summary-label {
+  font-weight: bold;
 }
 
 @media screen and (max-width: 768px) {

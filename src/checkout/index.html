@@ -1,25 +1,59 @@
 <!doctype html>
-
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>Sleep Outside | Checkout</title>
-
-    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="/css/style.css" />
   </head>
-
   <body>
     <header class="divider" id="main-header"></header>
     <main class="divider">
-      <section class="products">
-        <h2>Review & Place your Order</h2>
+      <section class="checkout-form">
+        <h2>Checkout</h2>
+        <form id="checkout-form">
+          <fieldset>
+            <legend>Customer Information</legend>
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" name="fname" required />
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" name="lname" required />
+          </fieldset>
+          <fieldset>
+            <legend>Address</legend>
+            <label for="street">Street Address</label>
+            <input type="text" id="street" name="street" required />
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" required />
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" required />
+            <label for="zip">Zip Code</label>
+            <input type="text" id="zip" name="zip" required />
+          </fieldset>
+          <fieldset>
+            <legend>Payment Information</legend>
+            <label for="cardNumber">Credit Card Number</label>
+            <input type="text" id="cardNumber" name="cardNumber" required value="1234123412341234" />
+            <label for="expiration">Expiration Date (MM/YY)</label>
+            <input type="text" id="expiration" name="expiration" placeholder="MM/YY" required value="12/26" />
+            <label for="code">Security Code</label>
+            <input type="text" id="code" name="code" required value="123" />
+          </fieldset>
+          <button type="submit" class="button_checkout">Place Order</button>
+        </form>
+      </section>
+      <section class="order-summary" id="order-summary">
+        <h2>Order Summary</h2>
+        <p><span class="summary-label">Subtotal:</span> <span id="subtotal">$0.00</span></p>
+        <p><span class="summary-label">Tax (6%):</span> <span id="tax">$0.00</span></p>
+        <p><span class="summary-label">Shipping:</span> <span id="shipping">$0.00</span></p>
+        <p><span class="summary-label">Order Total:</span> <span id="total">$0.00</span></p>
       </section>
     </main>
     <footer id="main-footer"></footer>
     <script src="/js/main.js" type="module"></script>
     <script src="/js/header.js" type="module"></script>
+    <script src="/js/CheckoutProcess.mjs" type="module"></script>
+    <script src="/js/checkout-init.js" type="module"></script>
   </body>
 </html>
