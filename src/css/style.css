@@ -7,7 +7,6 @@
   --tertiary-color: #8a470c;
   --light-grey: #d0d0d0;
   --dark-grey: #303030;
-
   /* sizes */
   --font-base: 18px;
   --small-font: 0.8em;
@@ -98,7 +97,8 @@ p {
   color: var(--tertiary-color);
 }
 
-button, .button_checkout {
+button,
+.button_checkout {
   padding: 0.5em 2em;
   background-color: var(--secondary-color);
   color: white;
@@ -125,32 +125,35 @@ button, .button_checkout {
 }
 
 /* End utility classes */
-
 /* Cart icon styles */
 .cart {
   position: relative;
   display: inline-block;
-  /* Ensures container wraps tightly around SVG */
   text-align: center;
 }
 
 .cart a {
   display: inline-block;
-  /* Ensures the link wraps tightly around SVG and badge */
   text-decoration: none;
 }
 
 .cart svg {
   width: 30px;
-  /* Slightly larger for better visibility */
   height: 30px;
-  /* Fixed height for consistency */
   vertical-align: middle;
-  /* Aligns SVG with surrounding content */
 }
 
 .cart:hover svg {
   fill: gray;
+}
+
+.cart-count-animate {
+  animation: growShrink 0.3s ease-in-out;
+}
+@keyframes growShrink {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
 }
 
 .cart-count {
@@ -168,8 +171,25 @@ button, .button_checkout {
   border: 1px solid var(--light-grey);
 }
 
-/* End cart icon styles */
+.cart-count-animate {
+  animation: growShrink 0.3s ease-in-out;
+}
 
+@keyframes growShrink {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* End cart icon styles */
 .mission {
   position: absolute;
   top: 1rem;
@@ -261,7 +281,6 @@ button, .button_checkout {
 }
 
 /* End product list card */
-
 .product-detail {
   padding: 1em;
   max-width: 500px;
@@ -344,7 +363,6 @@ button, .button_checkout {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
-  /* Fully opaque */
   z-index: 1000;
   display: flex;
   justify-content: center;
@@ -380,18 +398,14 @@ button, .button_checkout {
   width: 100%;
   height: 100%;
   display: none;
-  /* Hidden by default */
   align-items: center;
   justify-content: center;
   white-space: normal;
-  /* Allow text wrapping */
   overflow: hidden;
-  /* Prevent overflow */
 }
 
 .alert-message.active {
   display: flex;
-  /* Show and use flex */
 }
 
 .alert-nav {
@@ -425,7 +439,6 @@ button, .button_checkout {
   cursor: pointer;
 }
 
-
 /* discount indicators */
 .discount-badge {
   display: flex;
@@ -433,7 +446,6 @@ button, .button_checkout {
   color: white;
   font-size: 0.8rem;
   font-weight: bold;
-
   border-radius: 4px;
 }
 
@@ -463,7 +475,6 @@ button, .button_checkout {
   font-size: 0.9rem;
   font-weight: 500;
 }
-
 
 footer {
   font-size: var(--small-font);

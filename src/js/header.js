@@ -26,9 +26,16 @@ function updateCartCount() {
     const cartItems = getLocalStorage("so-cart") || [];
     const cartCountElement = document.getElementById("cart-count");
     if (cartCountElement) {
+      const previousQuantity = parseInt(cartCountElement.textContent) || 0;
       const totalQuantity = cartItems.reduce((sum, item) => sum + (item.Quantity || 1), 0);
       cartCountElement.textContent = totalQuantity > 0 ? totalQuantity : '';
       cartCountElement.style.display = totalQuantity > 0 ? "block" : "none";
+      if (totalQuantity > 0 && totalQuantity !== previousQuantity) {
+        cartCountElement.classList.add("cart-count-animate");
+        setTimeout(() => {
+          cartCountElement.classList.remove("cart-count-animate");
+        }, 300);
+      }
     } else {
       console.error("cart-count element não encontrado");
     }
