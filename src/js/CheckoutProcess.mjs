@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, alertMessage } from "./utils.mjs";
 import ExternalServices from "./ExternalServices.mjs";
 
 export default class CheckoutProcess {
@@ -88,15 +88,12 @@ export default class CheckoutProcess {
   }
 
   async checkout(form) {
-    event.preventDefault();
     try {
       const formData = this.formDataToJSON(form);
+
       if (!this.validateForm(formData)) {
         console.log("Form validation failed: All fields are required.");
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error-message";
-        errorDiv.textContent = "Please fill out all required fields.";
-        form.appendChild(errorDiv);
+        alertMessage("Please fill out all required fields.");
         return;
       }
 
@@ -132,10 +129,13 @@ export default class CheckoutProcess {
       window.location.href = `/checkout/order-confirmation.html?orderId=${response.orderId}`;
     } catch (error) {
       console.error("Error in checkout process:", error);
-      const errorDiv = document.createElement("div");
-      errorDiv.className = "error-message";
-      errorDiv.textContent = `Order submission failed: ${error.message}`;
-      form.appendChild(errorDiv);
+
+      if (error.name === "servicesError" && typeof error.message === "object") {
+        alertMessage(`Order submission failed: ${error.message.error || JSON.stringify(error.message)}`);
+      } else {
+        alertMessage("Order submission failed. Please try again.");
+      }
+
       const submitButton = form.querySelector("button[type='submit']");
       if (submitButton) {
         submitButton.disabled = false;

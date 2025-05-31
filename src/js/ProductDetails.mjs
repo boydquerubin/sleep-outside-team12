@@ -1,4 +1,4 @@
-import { getLocalStorage, setLocalStorage } from "./utils.mjs";
+import { getLocalStorage, setLocalStorage, alertMessage } from "./utils.mjs";
 
 export default class ProductDetails {
   constructor(productId, dataSource) {
@@ -12,25 +12,22 @@ export default class ProductDetails {
       this.product = await this.dataSource.findProductById(this.productId);
       if (!this.product) {
         console.error(`Product not found for ID: ${this.productId}`);
-        document.querySelector(".product-detail").innerHTML =
-          "<p>Product not found.</p>";
+        document.querySelector(".product-detail").innerHTML = "<p>Product not found.</p>";
         return;
       }
+
       console.log("Product data:", this.product);
       this.renderProductDetails();
+
       const addToCartButton = document.getElementById("addToCart");
       if (addToCartButton) {
-        addToCartButton.addEventListener(
-          "click",
-          this.addProductToCart.bind(this),
-        );
+        addToCartButton.addEventListener("click", this.addProductToCart.bind(this));
       } else {
         console.warn("Add to Cart button not found");
       }
     } catch (error) {
       console.error("Error initializing product details:", error);
-      document.querySelector(".product-detail").innerHTML =
-        "<p>Error loading product details.</p>";
+      document.querySelector(".product-detail").innerHTML = "<p>Error loading product details.</p>";
     }
   }
 
@@ -41,9 +38,7 @@ export default class ProductDetails {
         cartItems = [];
       }
 
-      const existingItem = cartItems.find(
-        (item) => item.Id === this.product.Id,
-      );
+      const existingItem = cartItems.find((item) => item.Id === this.product.Id);
 
       if (existingItem) {
         existingItem.Quantity = (existingItem.Quantity || 1) + 1;
@@ -55,7 +50,8 @@ export default class ProductDetails {
       console.log("Cart updated:", cartItems);
       window.dispatchEvent(new Event("cartUpdated"));
 
-      // Feedback visual
+      alertMessage(`${this.product.Name} added to cart!`);
+
       const addToCartButton = document.getElementById("addToCart");
       if (addToCartButton) {
         addToCartButton.textContent = "Added!";
@@ -78,29 +74,17 @@ export default class ProductDetails {
       const description = document.querySelector(".product__description");
       const addToCart = document.getElementById("addToCart");
 
-      if (
-        !brand ||
-        !name ||
-        !image ||
-        !price ||
-        !color ||
-        !description ||
-        !addToCart
-      ) {
-        console.error(
-          "One or more DOM elements not found for product details",
-          {
-            brand,
-            name,
-            image,
-            price,
-            color,
-            description,
-            addToCart,
-          },
-        );
-        document.querySelector(".product-detail").innerHTML =
-          "<p>Error rendering product details.</p>";
+      if (!brand || !name || !image || !price || !color || !description || !addToCart) {
+        console.error("One or more DOM elements not found for product details", {
+          brand,
+          name,
+          image,
+          price,
+          color,
+          description,
+          addToCart,
+        });
+        document.querySelector(".product-detail").innerHTML = "<p>Error rendering product details.</p>";
         return;
       }
 
@@ -110,55 +94,40 @@ export default class ProductDetails {
         this.product.Images?.PrimaryMedium ||
         this.product.Image ||
         "/images/placeholder.jpg";
+
       console.log("Image source selected:", imageSrc);
-      if (!imageSrc) {
-        console.warn(
-          `No image source found for product ID: ${this.product.Id}`,
-        );
-        image.src = "/images/placeholder.jpg";
-        image.alt = "No image available";
-      } else {
-        image.src = imageSrc;
-        image.alt = this.product.NameWithoutBrand || "Product Image";
-      }
+
+      image.src = imageSrc;
+      image.alt = this.product.NameWithoutBrand || "Product Image";
 
       brand.textContent = this.product.Brand?.Name || "Unknown Brand";
       name.textContent = this.product.NameWithoutBrand || "Unknown Product";
 
-      console.log("Product prices:", {
-        FinalPrice: this.product.FinalPrice,
-        SuggestedRetailPrice: this.product.SuggestedRetailPrice,
-      });
-
       const finalPrice = this.product.FinalPrice;
       const originalPrice = this.product.SuggestedRetailPrice;
+
       if (finalPrice && originalPrice && finalPrice < originalPrice) {
         const amountSaved = (originalPrice - finalPrice).toFixed(2);
-        const percentSaved = Math.round(
-          ((originalPrice - finalPrice) / originalPrice) * 100,
-        );
+        const percentSaved = Math.round(((originalPrice - finalPrice) / originalPrice) * 100);
         price.innerHTML = `
           <span class="original-price">$${originalPrice.toFixed(2)}</span>
           <span class="final-price">$${finalPrice.toFixed(2)}</span>
           <span class="savings">You save $${amountSaved} (${percentSaved}%)</span>
         `;
       } else {
-        price.textContent = finalPrice
-          ? `$${finalPrice.toFixed(2)}`
-          : "Price unavailable";
+        price.textContent = finalPrice ? `$${finalPrice.toFixed(2)}` : "Price unavailable";
       }
 
       color.textContent =
         this.product.Colors?.length > 0
           ? this.product.Colors[0].ColorName || "N/A"
           : "N/A";
-      description.innerHTML =
-        this.product.DescriptionHtmlSimple || "No description available";
+
+      description.innerHTML = this.product.DescriptionHtmlSimple || "No description available";
       addToCart.dataset.id = this.product.Id || "";
     } catch (error) {
       console.error("Error rendering product details:", error);
-      document.querySelector(".product-detail").innerHTML =
-        "<p>Error rendering product details.</p>";
+      document.querySelector(".product-detail").innerHTML = "<p>Error rendering product details.</p>";
     }
   }
 }

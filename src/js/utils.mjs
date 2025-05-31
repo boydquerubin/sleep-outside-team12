@@ -154,3 +154,35 @@ export async function checkFileExists(path) {
     return false;
   }
 }
+
+// display a dismissible alert message at the top of <main>
+export function alertMessage(message, scroll = true) {
+  const existing = document.querySelector(".alert-message");
+  if (existing) existing.remove();
+
+  const alert = document.createElement("div");
+  alert.classList.add("alert-message");
+
+  alert.innerHTML = `
+    <p>${message}</p>
+    <span class="close-alert" role="button" aria-label="Close Alert">✖</span>
+  `;
+
+  alert.addEventListener("click", function (e) {
+    if (
+      e.target.tagName === "SPAN" &&
+      e.target.classList.contains("close-alert")
+    ) {
+      alert.remove();
+    }
+  });
+
+  const main = document.querySelector("main");
+  if (main) {
+    main.prepend(alert);
+  }
+
+  if (scroll) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+}

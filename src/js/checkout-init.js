@@ -28,6 +28,12 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       console.log("Form submitted");
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
       await checkout.checkout(form);
     });
   } catch (error) {
