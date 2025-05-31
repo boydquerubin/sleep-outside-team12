@@ -611,6 +611,44 @@ footer {
   font-weight: bold;
 }
 
+/* newsletter style */
+
+.newsletter-signup {
+  background-color: #f5f5f5;
+  padding: 2em;
+  margin: 2em 0;
+  text-align: center;
+  border-radius: 8px;
+}
+
+.newsletter-signup input[type="email"] {
+  padding: 0.5em;
+  width: 60%;
+  max-width: 300px;
+  margin: 0.5em 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.newsletter-signup button {
+  padding: 0.5em 1em;
+  background-color: #265298;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.newsletter-signup button:hover {
+  background-color: #1d3f73;
+}
+
+.newsletter-message {
+  margin-top: 1em;
+  color: green;
+  font-weight: bold;
+}
+
 @media screen and (max-width: 768px) {
   .product-card img {
     max-width: 200px;

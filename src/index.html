@@ -61,6 +61,22 @@
         <h2>Top Products</h2>
         <ul class="product-list"></ul>
       </section>
+
+      <section class="newsletter-signup">
+        <h2>Subscribe to Our Newsletter</h2>
+        <p>Get the latest updates and outdoor tips delivered to your inbox!</p>
+        <form id="newsletter-form">
+          <input
+            type="email"
+            id="newsletter-email"
+            name="email"
+            placeholder="Enter your email"
+            required
+          />
+          <button type="submit">Subscribe</button>
+        </form>
+        <p class="newsletter-message" id="newsletter-message"></p>
+      </section>
     </main>
     <footer id="main-footer"></footer>
     <script src="/js/header.js" type="module"></script>
@@ -69,5 +85,6 @@
       new Alert();
     </script>
     <script src="/js/main.js" type="module"></script>
+    <script src="/js/newsletter.js" type="module"></script>
   </body>
 </html>
